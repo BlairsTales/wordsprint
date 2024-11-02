@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fantasy Word Sprint</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* Fantasy-styled background and font */
+    body {
+      font-family: 'Georgia', serif;
+      background-color: #f4e4c1;
+      background-image: url('https://www.transparenttextures.com/patterns/old-mathematics.png');
+      color: #5e3b1f;
+      text-align: center;
+      padding: 50px 0 0; /* Add padding to the bottom only */
+      margin: 0; /* Remove margin from the body */
+    }
+    h1 {
+      font-size: 2.5rem;
+      color: #4a2d16;
+    }
+    #timer {
+      font-size: 4rem;
+      margin: 20px 0;
+      font-weight: bold;
+      color: #8b5e3c;
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 10px 20px;
+      border: 2px solid #5e3b1f;
+      border-radius: 10px;
+      display: inline-block;
+    }
+    .status-icon {
+      color: #5e3b1f;
+      margin-right: 10px;
+    }
+    #contentBox {
+      margin-top: 40px;
+      padding: 20px;
+      background-color: rgba(255, 245, 225, 0.9);
+      border: 2px solid #5e3b1f;
+      border-radius: 10px;
+      width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    /* Navigation styles */
+    nav {
+      background: linear-gradient(180deg, #4d664e 0%, #3e5340 100%);
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center; /* Center the navigation items */
+      margin: 0; /* Remove margins */
+      width: 100%; /* Ensure it takes the full width */
+    }
+    nav ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center; /* Center the list items */
+      flex-wrap: wrap;
+    }
+    nav li {
+      margin: 5px;
+    }
+    nav a {
+      color: #fef9ed;
+      text-decoration: none;
+      padding: 10px 15px;
+      display: block;
+    }
+    nav a:hover {
+      background-color: #6e916f;
+      border-radius: 5px;
+    }
+
+    /* Hamburger menu for mobile */
+    .menu-toggle {
+      display: none;
+      font-size: 1.5rem;
+      color: #fef9ed;
+      cursor: pointer;
+      text-align: center;
+      padding: 10px;
+    }
+
+    /* Mobile styles */
+    @media (max-width: 768px) {
+      nav ul {
+        display: none;
+        flex-direction: column;
+      }
+      nav.active ul {
+        display: flex;
+      }
+      .menu-toggle {
+        display: block;
+      }
+    }
+
+    /* Logo styles */
+    .logo {
+      width: 50px; /* Adjust logo size */
+      height: auto;
+      margin-right: 10px; /* Space between logo and menu */
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <!-- Navigation bar with links to main pages -->
+    <nav>
+      <img src="https://briarcrawford.neocities.org/Images/ffg.png" alt="Logo" class="logo"> <!-- Replace with your logo URL -->
+      <div class="menu-toggle" onclick="toggleMenu()">
+        <i class="fa fa-bars"></i> Menu
+      </div>
+      <ul>
+        <li><a href="https://fantasyfablesguild.wordpress.com/"><i class="fa-solid fa-house"></i> Home</a></li>
+        <li><a href="https://fantasyfablesguild.wordpress.com/blog/"><i class="fa-solid fa-newspaper"></i> Blog</a></li>
+        <li><a href="https://briarcrawford.neocities.org/Generators/generators"><i class="fa-solid fa-robot"></i> Generators</a></li>
+        <li><a href="https://fantasyfablesguild.wordpress.com/goodies/"><i class="fa-solid fa-book"></i> Writing Goodies</a></li>
+        <li><a href="https://briarcrawford.neocities.org/shop"><i class="fa-solid fa-shop"></i> Shop</a></li>
+        <li><a href="https://briarcrawford.neocities.org/about"><i class="fa-solid fa-users"></i> About</a></li>
+        <li><a href="https://briarcrawford.neocities.org/contact"><i class="fa-solid fa-envelope"></i> Contact</a></li>
+        <li><a href="https://fantasyfablesguild.freeforums.net/"><i class="fa-solid fa-comments"></i> Forum</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <h1 id="status"><i class="fas fa-feather-alt status-icon"></i> Word Sprint in Progress</h1>
+  <div id="timer">10:00</div>
+
+  <!-- Content box for future chat feature -->
+  <div id="contentBox">
+    <h2><i class="fa-solid fa-comment"></i> Chat Box <i class="fa-solid fa-comment"></i></h2>
+    <script id="cid0020000391484829329" data-cfasync="false" async src="//st.chatango.com/js/gz/emb.js" style="width: 1100px;height: 400px;">{"handle":"wordsprint","arch":"js","styles":{"a":"3e5340","b":100,"c":"FFFFFF","d":"f8f3ef","e":"f8f3ef","h":"f4efea","k":"3e5340","l":"648066","m":"3e5340","n":"FFFFFF","p":"10","q":"3e5340","r":100,"sbc":"648066","fwtickm":1}}</script>
+  </div>
+
+  <!-- Audio for sounds -->
+  <audio id="endSound" src="https://upload.wikimedia.org/wikipedia/commons/8/83/Completion_%28Gravity_Sound%29.mp3" preload="auto"></audio>
+  <audio id="countdownSound" src="https://upload.wikimedia.org/wikipedia/commons/9/97/Notification_3_%28Gravity_Sound%29.wav" preload="auto"></audio>
+
+  <script>
+    let sprintTime = 600, // 10 minutes in seconds
+        restTime = 180,   // 3 minutes in seconds
+        countdownInterval, isSprinting = true;
+
+    const timerDisplay = document.getElementById("timer"),
+          statusDisplay = document.getElementById("status"),
+          endSound = document.getElementById("endSound"),
+          countdownSound = document.getElementById("countdownSound");
+
+    function formatTime(seconds) {
+      const min = Math.floor(seconds / 60).toString().padStart(2, '0');
+      const sec = (seconds % 60).toString().padStart(2, '0');
+      return `${min}:${sec}`;
+    }
+
+    function updateTimerDisplay(time) {
+      timerDisplay.textContent = formatTime(time);
+    }
+
+    function startCountdown(time, sprinting) {
+      clearInterval(countdownInterval);
+      updateTimerDisplay(time);
+
+      countdownInterval = setInterval(() => {
+        time--;
+        updateTimerDisplay(time);
+
+        if (time === 0) {
+          clearInterval(countdownInterval);
+          if (sprinting) {
+            endSound.play();
+            statusDisplay.innerHTML = '<i class="fas fa-feather-alt status-icon"></i> Sprint Complete!<br>Get ready for your break!';
+            // Start the rest period countdown
+            startCountdown(restTime, false);
+          } else {
+            countdownSound.play();
+            statusDisplay.innerHTML = '<i class="fas fa-clock status-icon"></i> Rest Complete!<br>Get ready for your next sprint!';
+            // Start the next sprint countdown
+            startCountdown(sprintTime, true);
+          }
+        }
+      }, 1000);
+    }
+
+    // Start the initial sprint countdown on page load
+    window.onload = function() {
+      startCountdown(sprintTime, true);
+    };
+
+    // Function to toggle the mobile menu
+    function toggleMenu() {
+      const nav = document.querySelector('nav');
+      nav.classList.toggle('active');
+    }
+  </script>
+
+</body>
+</html>
+
